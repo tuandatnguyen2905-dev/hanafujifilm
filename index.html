@@ -27,16 +27,16 @@
   --c7:#4A3A10;--c7bg:rgba(74,58,16,0.09);
   --c8:#30304A;--c8bg:rgba(48,48,74,0.09);
 }
-body{font-family:'Mulish',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.6;}
+body{font-family:'Mulish',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px;line-height:1.5;}
 
 /* ── HEADER ── */
-.header{background:var(--white);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;}
-.logo-text{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;font-weight:400;color:var(--ink);letter-spacing:-0.3px;user-select:none;}
+.header{background:var(--white);border-bottom:1px solid var(--line);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:50px;position:sticky;top:0;z-index:200;}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;font-weight:400;color:var(--ink);letter-spacing:-0.3px;user-select:none;}
 .header-right{display:flex;gap:6px;align-items:center;}
-.nav-btn{padding:7px 14px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--ink3);font-family:'Mulish',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;}
+.nav-btn{padding:5px 12px;background:transparent;border:1px solid transparent;border-radius:7px;color:var(--ink3);font-family:'Mulish',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;}
 .nav-btn:hover{color:var(--ink);background:var(--bg2);}
 .nav-btn.active{background:var(--ink);color:var(--white);border-color:var(--ink);}
-.btn-new{background:var(--ink);color:var(--white);border:none;border-radius:8px;padding:9px 16px;font-family:'Mulish',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.3px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.15s;}
+.btn-new{background:var(--ink);color:var(--white);border:none;border-radius:7px;padding:7px 13px;font-family:'Mulish',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.3px;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all 0.15s;}
 .btn-new:hover{background:var(--ink2);}
 
 /* ── PAGES ── */
@@ -44,31 +44,42 @@ body{font-family:'Mulish',sans-serif;background:var(--bg);color:var(--ink);min-h
 .page.active{display:block;animation:fadeUp 0.18s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
-/* ── CALENDAR LAYOUT (main + sidebar) ── */
-.cal-layout{display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:start;padding:20px 24px;}
+/* ── CALENDAR LAYOUT — full width, no sidebar column ── */
+.cal-layout{padding:14px 20px;}
+.cal-sidebar{margin-bottom:12px;}
 .cal-main{}
-.cal-sidebar{position:sticky;top:70px;}
+
+/* ── AVAIL PANEL — compact horizontal bar ── */
+.avail-bar{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;box-shadow:var(--shadow);}
+.avail-bar-label{font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink4);white-space:nowrap;}
+.avail-bar-modes{display:flex;gap:4px;flex-shrink:0;}
+.avail-bar-inputs{display:flex;gap:6px;align-items:center;flex:1;min-width:0;}
+.avail-bar-result{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:2;}
+.avail-cam-pill{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;}
+.avail-cam-pill.free{background:var(--green-bg);color:var(--green);border:1px solid rgba(46,125,82,0.2);}
+.avail-cam-pill.busy{background:var(--bg2);color:var(--ink4);text-decoration:line-through;border:1px solid var(--line);}
+.avail-cam-price{font-size:9px;font-weight:500;opacity:0.7;}
 
 /* ── STATS STRIP ── */
-.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
-.stat-card{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
-.stat-lbl{font-size:9px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink4);margin-bottom:3px;}
-.stat-val{font-size:20px;font-weight:900;color:var(--ink);line-height:1.2;}
-.stat-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:3px;margin-top:5px;}
-.chip-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:inline-block;width:fit-content;}
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.stat-card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:9px 12px;}
+.stat-lbl{font-size:8px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink4);margin-bottom:2px;}
+.stat-val{font-size:17px;font-weight:900;color:var(--ink);line-height:1.2;}
+.stat-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:3px;margin-top:4px;}
+.chip-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;display:inline-block;width:fit-content;}
 
 /* ── CALENDAR CONTROLS ── */
-.cal-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.cal-nav{display:flex;align-items:center;gap:10px;}
-.cal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ink);min-width:190px;}
-.arr{width:30px;height:30px;background:var(--white);border:1px solid var(--line2);border-radius:7px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.15s;}
+.cal-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-nav{display:flex;align-items:center;gap:8px;}
+.cal-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--ink);min-width:160px;}
+.arr{width:27px;height:27px;background:var(--white);border:1px solid var(--line2);border-radius:6px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.15s;}
 .arr:hover{background:var(--ink);color:var(--white);border-color:var(--ink);}
 
 /* ── CALENDAR GRID ── */
 .cal-grid{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
 .cal-grid-scroll{width:100%;}
 .cal-head-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--ink);}
-.cal-head-cell{padding:8px 2px;text-align:center;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);}
+.cal-head-cell{padding:6px 1px;text-align:center;font-size:9px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;color:rgba(255,255,255,0.6);}
 .cal-head-cell:nth-child(6),.cal-head-cell:nth-child(7){color:rgba(255,255,255,0.35);}
 .cal-weeks{}
 .cal-week{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line);}
@@ -79,13 +90,13 @@ body{font-family:'Mulish',sans-serif;background:var(--bg);color:var(--ink);min-h
 .cal-day.is-today{background:#FDFCF8;}
 .cal-day.is-weekend{background:var(--bg);}
 .cal-day.is-today.is-weekend{background:#FDFCF8;}
-.day-header{display:flex;align-items:center;gap:4px;margin-bottom:4px;}
-.day-num{font-size:11px;font-weight:700;color:var(--ink4);line-height:1;}
+.day-header{display:flex;align-items:center;gap:3px;margin-bottom:2px;}
+.day-num{font-size:10px;font-weight:700;color:var(--ink4);line-height:1;}
 .cal-day.is-today .day-num{background:var(--ink);color:var(--white);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;}
 .cal-day.other-month .day-num{color:var(--ink5);}
 
 /* booking pills in calendar */
-.bpill{display:flex;align-items:center;gap:4px;border-radius:5px;padding:3px 7px;font-size:9px;font-weight:700;margin-bottom:2px;cursor:pointer;overflow:hidden;transition:opacity 0.12s;position:relative;}
+.bpill{display:flex;align-items:center;gap:3px;border-radius:4px;padding:2px 5px;font-size:8px;font-weight:700;margin-bottom:2px;cursor:pointer;overflow:hidden;transition:opacity 0.12s;position:relative;line-height:1.3;}
 .bpill:hover{opacity:0.75;}
 .bpill-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
 .bpill-cam{font-size:8px;font-weight:800;opacity:0.7;flex-shrink:0;}
@@ -509,45 +520,25 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
       </div>
     </div>
 
-    <!-- RIGHT: Sidebar -->
+    <!-- AVAIL BAR — compact horizontal -->
     <div class="cal-sidebar">
-      <div class="sidebar-card">
-        <div class="sidebar-head">
-          <div class="sidebar-title">Kiểm tra máy trống</div>
+      <div class="avail-bar">
+        <span class="avail-bar-label">Kiểm tra</span>
+        <div class="avail-bar-modes">
+          <div class="tbtn on" id="av-mode-daily-d" onclick="setAvailModeD('daily')" style="font-size:10px;padding:4px 10px">Ngày</div>
+          <div class="tbtn" id="av-mode-shift-d" onclick="setAvailModeD('shift')" style="font-size:10px;padding:4px 10px">Ca</div>
         </div>
-        <div class="sidebar-body" style="padding:12px 14px">
-          <div style="display:flex;gap:5px;margin-bottom:10px">
-            <div class="tbtn on" id="av-mode-daily-d" onclick="setAvailModeD('daily')" style="flex:1;text-align:center;font-size:11px;padding:5px 6px">Theo ngày</div>
-            <div class="tbtn" id="av-mode-shift-d" onclick="setAvailModeD('shift')" style="flex:1;text-align:center;font-size:11px;padding:5px 6px">Theo ca</div>
-          </div>
-          <div id="av-daily-sec-d">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
-              <div class="field">
-                <div class="sb-lbl">Từ ngày</div>
-                <input type="date" id="sb-start" onchange="syncAvailDates('d');runAvail()" style="padding:7px 8px;font-size:12px">
-              </div>
-              <div class="field">
-                <div class="sb-lbl">Đến ngày</div>
-                <input type="date" id="sb-end" onchange="syncAvailDates('d');runAvail()" style="padding:7px 8px;font-size:12px">
-              </div>
-            </div>
-          </div>
-          <div id="av-shift-sec-d" style="display:none">
-            <div class="field" style="margin-bottom:7px">
-              <div class="sb-lbl">Ngày</div>
-              <input type="date" id="sb-shift-date-d" onchange="runAvail()" style="padding:7px 8px;font-size:12px">
-            </div>
-            <div style="display:flex;gap:5px;margin-bottom:8px">
-              <div class="stile" id="av-sh-mc-d" onclick="selectAvailShiftD('morning-afternoon')" style="flex:1;padding:6px 4px">
-                <div class="sn" style="font-size:10px">Sáng–Chiều</div><div class="st" style="font-size:9px">08–15h</div>
-              </div>
-              <div class="stile" id="av-sh-ae-d" onclick="selectAvailShiftD('afternoon-evening')" style="flex:1;padding:6px 4px">
-                <div class="sn" style="font-size:10px">Chiều–Tối</div><div class="st" style="font-size:9px">16–23h</div>
-              </div>
-            </div>
-          </div>
-          <div id="sb-result" style="display:flex;flex-direction:column;gap:6px;max-height:calc(100vh - 400px);overflow-y:auto;"></div>
+        <div class="avail-bar-inputs" id="av-daily-sec-d">
+          <input type="date" id="sb-start" onchange="syncAvailDates('d');runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
+          <span style="font-size:11px;color:var(--ink4);">→</span>
+          <input type="date" id="sb-end" onchange="syncAvailDates('d');runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
         </div>
+        <div class="avail-bar-inputs" id="av-shift-sec-d" style="display:none">
+          <input type="date" id="sb-shift-date-d" onchange="runAvail()" style="padding:5px 8px;font-size:11px;flex:1;min-width:0">
+          <div class="tbtn" id="av-sh-mc-d" onclick="selectAvailShiftD('morning-afternoon')" style="font-size:10px;padding:4px 8px;white-space:nowrap">08–15h</div>
+          <div class="tbtn" id="av-sh-ae-d" onclick="selectAvailShiftD('afternoon-evening')" style="font-size:10px;padding:4px 8px;white-space:nowrap">16–23h</div>
+        </div>
+        <div class="avail-bar-result" id="sb-result"></div>
       </div>
     </div>
   </div>
@@ -814,7 +805,7 @@ function startListeners(){
     bookings=snap.docs.map(d=>d.data());
     if(document.getElementById('page-calendar').classList.contains('active')){
       renderCalendar();
-      runAvail(); // auto-refresh avail sidebar
+      window.runAvail();
     }
   });
   onSnapshot(collection(db,'cameras'), snap=>{
@@ -1009,10 +1000,25 @@ function camAvailable(camId, startDs, endDs, shiftType){
   });
 }
 
-function buildAvailHtml(cameras, startDs, endDs, days, shiftType){
+function buildAvailHtml(cams, startDs, endDs, days, shiftType, compact=false){
   const key=getTierKey(days);
+  if(compact){
+    // Horizontal pill format for avail bar
+    let html=`<span style="font-size:9px;color:var(--ink4);font-weight:600;white-space:nowrap">${shiftType?shiftLbl(shiftType):days+'ng·'+getTierLabel(days)}</span>`;
+    cams.forEach(c=>{
+      const avail=camAvailable(c.id,startDs,endDs,shiftType);
+      const ppd=shiftType?(c.pShift||150000):(c[key]||c.p1||0);
+      if(avail){
+        html+=`<span class="avail-cam-pill free">${c.name} <span class="avail-cam-price">${fmtVND(ppd)}</span></span>`;
+      }else{
+        html+=`<span class="avail-cam-pill busy">${c.name}</span>`;
+      }
+    });
+    return html;
+  }
+  // Full card format for mobile sheet
   let html=`<div style="font-size:11px;color:var(--ink3);margin-bottom:8px;font-weight:600">${shiftType?shiftLbl(shiftType):days+' ngày · mức '+getTierLabel(days)}</div>`;
-  cameras.forEach(c=>{
+  cams.forEach(c=>{
     const avail=camAvailable(c.id,startDs,endDs,shiftType);
     const ppd=shiftType?(c.pShift||150000):(c[key]||c.p1||0);
     if(avail){
@@ -1028,14 +1034,14 @@ window.runAvail=function(){
   const res=document.getElementById('sb-result');
   if(avModeD==='shift'){
     const d=document.getElementById('sb-shift-date-d').value;
-    if(!d||!avShiftD){res.innerHTML='<div style="font-size:12px;color:var(--ink4)">Chọn ngày và ca</div>';return;}
-    res.innerHTML=buildAvailHtml(cameras,d,d,1,avShiftD);
+    if(!d||!avShiftD){res.innerHTML='<span style="font-size:10px;color:var(--ink4)">Chọn ngày và ca</span>';return;}
+    res.innerHTML=buildAvailHtml(cameras,d,d,1,avShiftD,true);
   }else{
     const s=document.getElementById('sb-start').value,e=document.getElementById('sb-end').value;
     if(!s||!e){res.innerHTML='';return;}
     const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
-    if(days<=0){res.innerHTML=`<div style="font-size:12px;color:var(--red)">Ngày không hợp lệ</div>`;return;}
-    res.innerHTML=buildAvailHtml(cameras,s,e,days,null);
+    if(days<=0){res.innerHTML=`<span style="font-size:10px;color:var(--red)">Ngày không hợp lệ</span>`;return;}
+    res.innerHTML=buildAvailHtml(cameras,s,e,days,null,true);
   }
 };
 
@@ -1045,15 +1051,15 @@ window.runAvailMobile=function(){
   if(avMode==='shift'){
     const d=document.getElementById('sb-shift-date').value;
     if(!d||!avShift){res.innerHTML='<div style="font-size:12px;color:var(--ink4)">Chọn ngày và ca</div>';return;}
-    res.innerHTML=buildAvailHtml(cameras,d,d,1,avShift);
-    document.getElementById('sb-result').innerHTML=res.innerHTML;
+    res.innerHTML=buildAvailHtml(cameras,d,d,1,avShift,false);
+    document.getElementById('sb-result').innerHTML=buildAvailHtml(cameras,d,d,1,avShift,true);
   }else{
     const s=document.getElementById('sb-start-m').value,e=document.getElementById('sb-end-m').value;
     if(!s||!e){res.innerHTML='';return;}
     const days=Math.round((new Date(e)-new Date(s))/86400000)+1;
     if(days<=0){res.innerHTML=`<div style="font-size:12px;color:var(--red)">Ngày không hợp lệ</div>`;return;}
-    res.innerHTML=buildAvailHtml(cameras,s,e,days,null);
-    document.getElementById('sb-result').innerHTML=res.innerHTML;
+    res.innerHTML=buildAvailHtml(cameras,s,e,days,null,false);
+    document.getElementById('sb-result').innerHTML=buildAvailHtml(cameras,s,e,days,null,true);
   }
 };
 
