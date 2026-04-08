@@ -45,9 +45,9 @@ body{font-family:'Mulish',sans-serif;background:var(--bg);color:var(--ink);min-h
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── CALENDAR LAYOUT (main + sidebar) ── */
-.cal-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;padding:20px 28px;}
+.cal-layout{display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:start;padding:20px 24px;}
 .cal-main{}
-.cal-sidebar{position:sticky;top:78px;}
+.cal-sidebar{position:sticky;top:70px;}
 
 /* ── STATS STRIP ── */
 .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
@@ -661,7 +661,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5;}
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-hd">
-      <div class="modal-title">Đặt lịch mới</div>
+      <div class="modal-title" id="modal-title">Đặt lịch mới</div>
       <button class="modal-x" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-bd">
@@ -806,6 +806,7 @@ let EL_FEES={early:50000,late:50000};
 let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
 let fMode='daily', fShift=null, fSelCams=[], fEL={early:false,late:false};
 let avMode='daily', avModeD='daily', avShift=null, avShiftD=null;
+let editingId=null;
 
 // ════ FIRESTORE LISTENERS ════
 function startListeners(){
@@ -910,7 +911,10 @@ function renderCalendar(){
           tip+=`<div class="tip-r"><span class="tip-l">Đã cọc</span><span class="tip-v">${fmtVND(b.depositAmt||0)}</span></div>`;
           tip+=`<div class="tip-r"><span class="tip-l">Phải trả</span><span class="tip-v">${fmtVND(b.price||0)}</span></div>`;
           tip+=`<div class="tip-refund ${refund>=0?'pos':'neg'}">${refund>=0?'Hoàn lại':'Còn nợ'}: ${fmtVND(Math.abs(refund))}</div>`;
-          tip+=`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--line)"><button onclick="deleteBookingId('${b.id}')" style="background:var(--red-bg);border:1px solid rgba(192,57,43,0.3);color:var(--red);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;width:100%;font-family:Mulish,sans-serif">Xóa lịch này</button></div>`;
+          tip+=`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <button onclick="openEditModal('${b.id}')" style="background:var(--ink);border:none;color:var(--white);border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:Mulish,sans-serif">✏ Sửa</button>
+            <button onclick="deleteBookingId('${b.id}')" style="background:var(--red-bg);border:1px solid rgba(192,57,43,0.3);color:var(--red);border-radius:6px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:Mulish,sans-serif">✕ Xóa</button>
+          </div>`;
         } else {
           tip+=`<div class="tip-r"><span class="tip-l">Trạng thái</span><span class="tip-v" style="color:var(--red)">Khóa lịch</span></div>`;
           tip+=`<div class="tip-r"><span class="tip-l">Ca</span><span class="tip-v">${shiftLbl(b.shift)}</span></div>`;
@@ -931,14 +935,50 @@ window.deleteBookingId=async function(id){
   if(!confirm('Xác nhận xóa lịch này?'))return;
   closeAllTips();
   const batch=writeBatch(db);
-  // Delete main booking
   batch.delete(doc(db,'bookings',id));
-  // Delete companion early/late blocked slots
   batch.delete(doc(db,'bookings',id+'-E'));
   batch.delete(doc(db,'bookings',id+'-L'));
-  // If this IS a blocked slot (id ends with -E or -L), also find and handle it
   await batch.commit();
   toast('Đã xóa lịch');
+};
+
+
+window.openEditModal=function(id){
+  closeAllTips();
+  const b=bookings.find(x=>x.id===id);
+  resetForm();
+  buildCamGrid();
+  updateELFeeLabels();
+  // Set title
+  document.getElementById('modal-title').textContent='Sửa lịch';
+  // Fill customer
+  document.getElementById('f-name').value=b.name||'';
+  document.getElementById('f-phone').value=b.phone||'';
+  document.getElementById('f-note').value=b.note||'';
+  document.getElementById('f-dep').value=b.deposit||'';
+  document.getElementById('f-del').value=b.delivery||'';
+  document.getElementById('f-dep-amt').value=b.depositAmt??100000;
+  document.getElementById('f-disc').value=b.discount||0;
+  // Set mode
+  if(b.mode==='shift'){
+    window.setMode('shift');
+    document.getElementById('f-sdate').value=b.start||'';
+    if(b.shift) window.setShift(b.shift);
+  } else {
+    window.setMode('daily');
+    document.getElementById('f-start').value=b.start||'';
+    document.getElementById('f-end').value=b.end||'';
+  }
+  // Set cameras
+  fSelCams=[b.cam];
+  document.querySelectorAll('.ctile').forEach(el=>{
+    if(el.dataset.cam===b.cam)el.classList.add('on');
+  });
+  // Set early/late
+  if(b.earlyLate?.early){fEL.early=true;document.getElementById('el-early').classList.add('on');}
+  if(b.earlyLate?.late){fEL.late=true;document.getElementById('el-late').classList.add('on');}
+  updatePricePreview();updateFinal();updateELDesc();
+  document.getElementById('overlay').classList.add('open');
 };
 
 function updateStats(){
@@ -1047,8 +1087,17 @@ window.selectAvailShiftD=function(s){
 };
 
 // ════ BOOKING FORM ════
-window.openModal=function(){resetForm();buildCamGrid();updateELFeeLabels();document.getElementById('overlay').classList.add('open');};
-window.closeModal=function(){document.getElementById('overlay').classList.remove('open');};
+window.openModal=function(){
+  editingId=null;
+  resetForm();buildCamGrid();updateELFeeLabels();
+  document.getElementById('modal-title').textContent='Đặt lịch mới';
+  document.getElementById('overlay').classList.add('open');
+};
+window.closeModal=function(){
+  editingId=null;
+  document.getElementById('modal-title').textContent='Đặt lịch mới';
+  document.getElementById('overlay').classList.remove('open');
+};
 
 function resetForm(){
   fMode='daily';fShift=null;fSelCams=[];fEL={early:false,late:false};
@@ -1170,6 +1219,28 @@ window.submitBooking=async function(){
   const disc=parseFloat(document.getElementById('f-disc').value)||0;
   const elFee=(fEL.early?EL_FEES.early:0)+(fEL.late?EL_FEES.late:0);
   const depAmt=parseFloat(document.getElementById('f-dep-amt').value)||0;
+
+  // ── EDIT MODE: update existing booking ──
+  if(editingId){
+    const orig=bookings.find(x=>x.id===editingId);
+    if(!orig){toast('Không tìm thấy lịch gốc');return;}
+    const camId=fSelCams[0];
+    const c=cameras.find(x=>x.id===camId);if(!c){toast('Máy không hợp lệ');return;}
+    const base=(c[key]||c.p1||0)*(fMode==='daily'?days:1);
+    const price=Math.round(base*(1-disc/100))+elFee;
+    const updated={...orig,name,phone:document.getElementById('f-phone').value.trim(),note:document.getElementById('f-note').value.trim(),cam:camId,camName:c.name,mode:fMode,shift:fShift,start,end,days:fMode==='daily'?days:1,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:base,discount:disc,elFee,price,depositAmt:depAmt,deposit:document.getElementById('f-dep').value,delivery:document.getElementById('f-del').value,earlyLate:{...fEL}};
+    const batch=writeBatch(db);
+    batch.set(doc(db,'bookings',editingId),updated);
+    // Remove old blocked slots and recreate if needed
+    batch.delete(doc(db,'bookings',editingId+'-E'));
+    batch.delete(doc(db,'bookings',editingId+'-L'));
+    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);const pds=`${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`;batch.set(doc(db,'bookings',editingId+'-E'),{id:editingId+'-E',name:name+' (Lấy sớm)',cam:camId,camName:c.name,mode:'shift',shift:'afternoon-evening',start:pds,end:pds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:orig.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);const nds=`${nxt.getFullYear()}-${String(nxt.getMonth()+1).padStart(2,'0')}-${String(nxt.getDate()).padStart(2,'0')}`;batch.set(doc(db,'bookings',editingId+'-L'),{id:editingId+'-L',name:name+' (Trả muộn)',cam:camId,camName:c.name,mode:'shift',shift:'morning-afternoon',start:nds,end:nds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:orig.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    try{await batch.commit();toast('Đã cập nhật lịch!');window.closeModal();}catch(e){toast('Lỗi: '+e.message);}
+    return;
+  }
+
+  // ── CREATE MODE: new booking ──
   const batch=writeBatch(db);
   fSelCams.forEach(id=>{
     const c=cameras.find(x=>x.id===id);if(!c)return;
@@ -1178,8 +1249,8 @@ window.submitBooking=async function(){
     const bkId=Date.now()+'-'+id+'-'+Math.random().toString(36).slice(2,6);
     const bk={id:bkId,name,phone:document.getElementById('f-phone').value.trim(),note:document.getElementById('f-note').value.trim(),cam:id,camName:c.name,mode:fMode,shift:fShift,start,end,days:fMode==='daily'?days:1,tierKey:key,pricePerUnit:c[key]||c.p1||0,subTotal:base,discount:disc,elFee,price,depositAmt:depAmt,deposit:document.getElementById('f-dep').value,delivery:document.getElementById('f-del').value,earlyLate:{...fEL},blocked:false,createdAt:new Date().toISOString()};
     batch.set(doc(db,'bookings',bkId),bk);
-    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);const pds=prev.toISOString().split('T')[0];const eid=bkId+'-E';batch.set(doc(db,'bookings',eid),{id:eid,name:name+' (Lấy sớm)',cam:id,camName:c.name,mode:'shift',shift:'afternoon-evening',start:pds,end:pds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
-    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);const nds=nxt.toISOString().split('T')[0];const lid=bkId+'-L';batch.set(doc(db,'bookings',lid),{id:lid,name:name+' (Trả muộn)',cam:id,camName:c.name,mode:'shift',shift:'morning-afternoon',start:nds,end:nds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    if(fEL.early){const prev=new Date(start);prev.setDate(prev.getDate()-1);const pds=`${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`;const eid=bkId+'-E';batch.set(doc(db,'bookings',eid),{id:eid,name:name+' (Lấy sớm)',cam:id,camName:c.name,mode:'shift',shift:'afternoon-evening',start:pds,end:pds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
+    if(fEL.late){const nxt=new Date(end);nxt.setDate(nxt.getDate()+1);const nds=`${nxt.getFullYear()}-${String(nxt.getMonth()+1).padStart(2,'0')}-${String(nxt.getDate()).padStart(2,'0')}`;const lid=bkId+'-L';batch.set(doc(db,'bookings',lid),{id:lid,name:name+' (Trả muộn)',cam:id,camName:c.name,mode:'shift',shift:'morning-afternoon',start:nds,end:nds,days:1,price:0,depositAmt:0,discount:0,elFee:0,subTotal:0,pricePerUnit:0,tierKey:'',blocked:true,createdAt:bk.createdAt,phone:'',note:'',deposit:'',delivery:'',earlyLate:{early:false,late:false}});}
   });
   try{await batch.commit();toast('Đặt lịch thành công!');window.closeModal();}catch(e){toast('Lỗi: '+e.message);}
 };
